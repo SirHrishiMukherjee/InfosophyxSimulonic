@@ -272,18 +272,33 @@
 <script>
 /* ------------------------- Demo Data ------------------------- */
 const affairs = [
-  { title:"Energy Transition Compact", tag:["Markets","Planetary"], region:"Europe/Africa", cat:"Markets", coherence:72, risk:0.28, simulon:[0.6,0.2,0.3] },
-  { title:"Mars Treaty (Hab Law I)", tag:["Governance","Martian"], region:"Martian", cat:"Governance", coherence:64, risk:0.36, simulon:[0.5,0.5,0.2] },
-  { title:"AI Autonomy Accords", tag:["Technics","Governance"], region:"Americas", cat:"Technics", coherence:58, risk:0.42, simulon:[0.7,0.2,0.6] },
-  { title:"Ocean Rights Convention", tag:["Planetary","Culture"], region:"Asia/Oceania", cat:"Planetary", coherence:69, risk:0.26, simulon:[0.4,0.6,0.3] },
-  { title:"CBDC Interop Framework", tag:["Markets","Governance"], region:"Europe/Africa", cat:"Markets", coherence:61, risk:0.34, simulon:[0.5,0.3,0.5] },
-  { title:"Quantum Sensor Proliferation", tag:["Technics","Orbital"], region:"Orbital", cat:"Technics", coherence:54, risk:0.47, simulon:[0.8,0.4,0.5] },
-  { title:"Climate Adaptation Mesh", tag:["Planetary","Culture"], region:"Americas", cat:"Planetary", coherence:75, risk:0.24, simulon:[0.3,0.7,0.2] },
-  { title:"Orbital Debris Accords", tag:["Orbital","Governance"], region:"Orbital", cat:"Governance", coherence:67, risk:0.31, simulon:[0.6,0.6,0.4] },
-  { title:"Cultural Memory Commons", tag:["Culture","Governance"], region:"Asia/Oceania", cat:"Culture", coherence:73, risk:0.22, simulon:[0.2,0.5,0.3] },
+  { title:"New Canada Constitution (Simulonic Draft I)", tag:["Governance","Culture"], region:"Americas", cat:"Governance", coherence:78, risk:0.22, simulon:[0.55,0.35,0.50] },
+  { title:"NCC Stabilization Framework (Interstellar Reserve)", tag:["Markets","Governance"], region:"Americas", cat:"Markets", coherence:71, risk:0.29, simulon:[0.60,0.30,0.55] },
+  { title:"CII Control Core Charter (Intent Control Vector)", tag:["Technics","Governance"], region:"Americas", cat:"Technics", coherence:66, risk:0.34, simulon:[0.75,0.45,0.70] },
+  { title:"SimuLang Web IDE — Symbolic ∞ Release", tag:["Technics","Culture"], region:"Americas", cat:"Technics", coherence:63, risk:0.37, simulon:[0.80,0.50,0.60] },
+  { title:"Simulonic Field Geometry — SFG v1 Prototype", tag:["Technics","Planetary"], region:"Orbital", cat:"Technics", coherence:58, risk:0.45, simulon:[0.85,0.40,0.55] },
+  { title:"Membrane Emitter Array Pilot", tag:["Technics","Orbital"], region:"Orbital", cat:"Technics", coherence:55, risk:0.48, simulon:[0.90,0.35,0.65] },
+  { title:"Celestial Navigation Lock-On Protocol", tag:["Orbital","Technics"], region:"Orbital", cat:"Orbital", coherence:69, risk:0.28, simulon:[0.70,0.40,0.45] },
+  { title:"Orbital Debris Accords (Simulon Position)", tag:["Governance","Orbital"], region:"Orbital", cat:"Governance", coherence:67, risk:0.31, simulon:[0.60,0.55,0.40] },
+  { title:"Mars Treaty (Hab Law I)", tag:["Governance","Martian"], region:"Martian", cat:"Governance", coherence:64, risk:0.36, simulon:[0.50,0.50,0.20] },
+  { title:"Lunar Commons & Resource Charter", tag:["Governance","Lunar"], region:"Lunar", cat:"Governance", coherence:62, risk:0.33, simulon:[0.55,0.45,0.35] },
+  { title:"Climate Adaptation Mesh — New Canada", tag:["Planetary","Culture"], region:"Americas", cat:"Planetary", coherence:75, risk:0.24, simulon:[0.30,0.70,0.25] },
+  { title:"AI Autonomy Accords (Simulon Safe Ops)", tag:["Technics","Governance"], region:"Americas", cat:"Technics", coherence:59, risk:0.41, simulon:[0.70,0.25,0.60] },
+  { title:"Zenodotus Library — Simulon Index", tag:["Culture","Technics"], region:"Americas", cat:"Culture", coherence:73, risk:0.22, simulon:[0.25,0.55,0.30] },
+  { title:"OBT Rollout — Optimal Balance Technology", tag:["Technics","Markets"], region:"Americas", cat:"Technics", coherence:68, risk:0.30, simulon:[0.65,0.45,0.55] },
+  { title:"Infosophic Equation — Integration Protocol", tag:["Technics","Culture"], region:"Americas", cat:"Technics", coherence:70, risk:0.27, simulon:[0.50,0.50,0.50] },
+  { title:"Render Deployments — SLA & Uptime", tag:["Technics","Markets"], region:"Americas", cat:"Technics", coherence:61, risk:0.35, simulon:[0.55,0.35,0.45] },
+  { title:"Simulon Maps — Super-Markers (Distributed)", tag:["Technics","Culture"], region:"Americas", cat:"Technics", coherence:65, risk:0.32, simulon:[0.60,0.40,0.50] },
+  { title:"Proxima b Listening Post Concept", tag:["Orbital","Planetary"], region:"Orbital", cat:"Orbital", coherence:52, risk:0.50, simulon:[0.85,0.30,0.40] },
+  { title:"Alpha Centauri Pathfinding Study", tag:["Orbital","Planetary"], region:"Orbital", cat:"Orbital", coherence:53, risk:0.49, simulon:[0.80,0.35,0.45] }
 ];
 
-const triadWords = ["Peace","War","Justice","Power","Culture","Technology","Market","State","Tribe","Cosmos","Memory","Liberty"];
+const triadWords = [
+  "Infosophy","Simulon","OBT","Coherence","Intention","Resonance",
+  "Warp","Governance","Liberty","Justice","Market","State","Tribe",
+  "Memory","Cosmos","Entropy","CMBR","CII","NCC","Octyl","Coeternal",
+  "Intertillage","Delineator","New Canada","SFG","SimuLang"
+];
 
 /* ------------------------- Utilities ------------------------- */
 const $ = sel => document.querySelector(sel);
