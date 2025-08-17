@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Infosophy × Simulonic — World of Affairs</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#111827; --card:#0f172a; --ink:#e8eef7; --muted:#9fb0c8;
+    --accent:#61dafb; --accent2:#9f7aea; --good:#6ee7a6; --warn:#fbbf24; --bad:#f87171;
+    --grid:#1f2937; --stroke:#2b3550; --chip:#1b2236; --ring:#26314b;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#0b0f15,#0d1117);color:var(--ink);
+    font:14px/1.5 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .app{display:grid;grid-template-rows:auto 1fr;min-height:100%}
+
+  header{
+    position:sticky;top:0;z-index:30;background:rgba(13,17,23,.7);backdrop-filter:blur(8px);
+    border-bottom:1px solid #161d2b; padding:.7rem 1rem;
+    display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center
+  }
+  .brand{display:flex;align-items:center;gap:.75rem}
+  .sigil{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#a0e9ff,transparent 55%) ,radial-gradient(circle at 75% 70%,#b69cff,transparent 50%); border:1px solid #2a3756; box-shadow:0 0 0 4px #101626 inset}
+  .title{font-size:18px;font-weight:700;letter-spacing:.4px}
+  .subtitle{color:var(--muted);font-size:12px}
+  .searchbar{display:flex;gap:.5rem;align-items:center}
+  .searchbar input{
+    width:min(520px, 60vw); background:#0b1323;border:1px solid #1b2440;outline:none;color:var(--ink);
+    padding:.6rem .8rem;border-radius:.6rem
+  }
+  .icv{display:flex;align-items:center;gap:1rem;background:linear-gradient(180deg,#0c1426,#0b111f);border:1px solid #1a2440;
+       padding:.5rem .8rem;border-radius:.8rem}
+  .icv small{display:block;color:var(--muted);margin-bottom:.15rem}
+  .icv .vec{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;align-items:center;min-width:280px}
+  .icv .vec label{font-size:12px;color:var(--muted)}
+  .icv .vec input[type="range"]{width:100%}
+  .badge{font-size:11px;color:#a7b6d6;background:#14213a;border:1px solid #1a2440;padding:.2rem .5rem;border-radius:.5rem}
+
+  .shell{display:grid;grid-template-columns:260px 1fr;gap:1rem;padding:1rem}
+  @media (max-width: 980px){ .shell{grid-template-columns:1fr} header{grid-template-columns:1fr} .icv{grid-column:1/-1} }
+
+  .side{
+    background:linear-gradient(180deg,#0e1628,#0c1423);border:1px solid #15203a;border-radius:1rem;padding:1rem;position:relative
+  }
+  .section-title{font-weight:700;letter-spacing:.5px;margin-bottom:.5rem}
+  .az{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0 .4rem}
+  .az .letter{
+    font-variant:small-caps;font-weight:700;border:1px solid #1a2440;background:#0c1426;color:#a9b7d4;
+    padding:.28rem .45rem;border-radius:.45rem;cursor:pointer;user-select:none
+  }
+  .az .letter.active{outline:2px solid #28407a}
+  .filters{display:grid;gap:.5rem;margin:.8rem 0}
+  .filters select, .filters button{
+    width:100%;background:#0b1323;border:1px solid #1b2440;color:var(--ink);padding:.55rem .7rem;border-radius:.6rem
+  }
+  .filters button{cursor:pointer}
+  .legend{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.2rem}
+  .chip{background:var(--chip);border:1px solid #243153;border-radius:999px;padding:.25rem .6rem;font-size:12px;color:#b7c6e6}
+
+  .main{
+    display:grid;grid-template-rows:auto 1fr;gap:1rem;min-width:0
+  }
+  .tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+  .tab{
+    padding:.45rem .75rem;border-radius:.6rem;border:1px solid #1a2440;background:#0c1426;color:#c5d3f2;cursor:pointer;user-select:none
+  }
+  .tab.active{background:#122048;box-shadow:inset 0 0 0 1px #2b3e74}
+  .panels{position:relative}
+  .panel{display:none}
+  .panel.active{display:block}
+
+  /* Overview cards */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  @media (max-width:1200px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:760px){ .grid{grid-template-columns:1fr} }
+
+  .card{
+    background:linear-gradient(180deg,#0b1222,#0a1020);border:1px solid #16203a;border-radius:1rem;padding:1rem;min-width:0;
+    display:grid;grid-template-rows:auto auto 90px;gap:.6rem
+  }
+  .card h3{margin:0;font-size:16px;letter-spacing:.3px}
+  .meta{display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;color:var(--muted);font-size:12px}
+  .spark{width:100%;height:90px;background:linear-gradient(180deg,#0a1223,#0a1020);border:1px solid #152142;border-radius:.6rem;position:relative}
+  .spark svg{display:block;width:100%;height:100%}
+  .meter{display:flex;align-items:center;gap:.5rem}
+  .bar{height:6px;background:#132146;border:1px solid #1b2b54;border-radius:999px;flex:1;position:relative;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,#61dafb,#9f7aea);width:40%}
+  .tag{font-size:11px;color:#adc2ea;background:#0f1a33;border:1px solid #17244a;padding:.18rem .45rem;border-radius:.4rem}
+
+  /* Radar + controls */
+  .radarwrap{display:grid;grid-template-columns:320px 1fr;gap:1rem}
+  @media (max-width:980px){ .radarwrap{grid-template-columns:1fr} }
+  .panelbox{background:linear-gradient(180deg,#0b1222,#0a1020);border:1px solid #16203a;border-radius:1rem;padding:1rem}
+  .panelbox select,.panelbox input[type="range"]{
+    width:100%;background:#0b1323;border:1px solid #1b2440;color:var(--ink);padding:.6rem .7rem;border-radius:.6rem
+  }
+  .radar{width:100%;height:380px;border:1px solid #172244;background:#0a1020;border-radius:.8rem}
+  .radar svg{width:100%;height:100%}
+
+  /* Triads */
+  .triads{display:grid;grid-template-columns:280px 1fr;gap:1rem}
+  @media (max-width:980px){ .triads{grid-template-columns:1fr} }
+  .choices{display:grid;gap:.4rem}
+  .choices .opt{display:flex;align-items:center;gap:.5rem}
+  .triangle{height:420px;border:1px solid #172244;background:#0a1020;border-radius:.8rem;position:relative}
+  .triangle svg{width:100%;height:100%}
+  .weights{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.6rem}
+  .weights input[type="range"]{width:100%}
+
+  /* Signals (barcode) + Atlas */
+  .signals{display:grid;grid-template-columns:1fr 320px;gap:1rem}
+  @media (max-width:980px){ .signals{grid-template-columns:1fr} }
+  .barcode{height:380px;border:1px solid #172244;background:#0a1020;border-radius:.8rem;position:relative;overflow:hidden}
+  .barcode canvas{width:100%;height:100%}
+  .atlas{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .tile{background:linear-gradient(180deg,#0b1222,#0a1020);border:1px solid #172244;border-radius:.8rem;padding:1rem}
+  .tile h4{margin:.2rem 0 .5rem 0}
+  .em{font-weight:700}
+  footer{padding:1rem;color:#a7b6d6;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #16203a}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="sigil" aria-hidden="true"></div>
+      <div>
+        <div class="title">Infosophy × Simulonic</div>
+        <div class="subtitle">World of Affairs • Coherence & Control</div>
+      </div>
+    </div>
+
+    <div class="searchbar">
+      <input id="q" placeholder="Search affairs, tags, regions…" />
+      <span class="badge" id="count">0 affairs</span>
+    </div>
+
+    <div class="icv" title="Intent Control Vector — steer global emphasis">
+      <div>
+        <small>Intent Control Vector</small>
+        <div class="vec">
+          <label for="ix">I<sub>x</sub></label><input id="ix" type="range" min="-100" max="100" value="12" />
+          <label for="iy">I<sub>y</sub></label><input id="iy" type="range" min="-100" max="100" value="35" />
+          <label for="iz">I<sub>z</sub></label><input id="iz" type="range" min="-100" max="100" value="-8" />
+        </div>
+      </div>
+      <div class="badge" id="mag">‖ι‖ = 0.00</div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="side">
+      <div class="section-title">Roman Index (A–Z)</div>
+      <div class="az" id="az"></div>
+
+      <div class="section-title" style="margin-top:.8rem">Filters</div>
+      <div class="filters">
+        <select id="cat">
+          <option value="">All categories</option>
+          <option>Governance</option>
+          <option>Markets</option>
+          <option>Culture</option>
+          <option>Planetary</option>
+          <option>Orbital</option>
+          <option>Technics</option>
+        </select>
+        <select id="region">
+          <option value="">All regions</option>
+          <option>Americas</option>
+          <option>Europe/Africa</option>
+          <option>Asia/Oceania</option>
+          <option>Orbital</option>
+          <option>Lunar</option>
+          <option>Martian</option>
+        </select>
+        <button id="reset">Reset filters</button>
+      </div>
+
+      <div class="legend">
+        <span class="chip">Coherence ↑ good</span>
+        <span class="chip">Risk ↑ bad</span>
+        <span class="chip">Simulonic gain ↯</span>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-tab="overview">Overview</div>
+        <div class="tab" data-tab="cohere">Cohere-Index</div>
+        <div class="tab" data-tab="triads">Triads</div>
+        <div class="tab" data-tab="signals">Signals + Atlas</div>
+      </div>
+
+      <div class="panels">
+        <!-- OVERVIEW -->
+        <section class="panel active" id="overview">
+          <div class="grid" id="grid"></div>
+        </section>
+
+        <!-- COHERE -->
+        <section class="panel" id="cohere">
+          <div class="radarwrap">
+            <div class="panelbox">
+              <div class="section-title">Focus affair</div>
+              <select id="focus"></select>
+              <div style="height:.8rem"></div>
+              <div class="section-title">Weighting</div>
+              <label>Coherence emphasis<input id="wC" type="range" min="0" max="100" value="70"></label>
+              <label>Stability emphasis<input id="wS" type="range" min="0" max="100" value="60"></label>
+              <label>Openness emphasis<input id="wO" type="range" min="0" max="100" value="40"></label>
+              <label>Resonance emphasis<input id="wR" type="range" min="0" max="100" value="55"></label>
+              <label>Risk aversion<input id="wK" type="range" min="0" max="100" value="65"></label>
+              <label>Agency emphasis<input id="wA" type="range" min="0" max="100" value="50"></label>
+              <div style="margin-top:.6rem" class="chip" id="score">Global score: —</div>
+            </div>
+            <div class="radar panelbox">
+              <svg id="radar"></svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- TRIADS -->
+        <section class="panel" id="triads">
+          <div class="triads">
+            <div class="panelbox">
+              <div class="section-title">Choose up to three vertices</div>
+              <div class="choices" id="choices"></div>
+              <div class="weights">
+                <label>α<input id="alpha" type="range" min="0" max="100" value="33"></label>
+                <label>β<input id="beta" type="range" min="0" max="100" value="33"></label>
+                <label>γ<input id="gamma" type="range" min="0" max="100" value="34"></label>
+              </div>
+              <div style="margin-top:.5rem" class="chip" id="bary">Barycentric (α,β,γ) = (0.33, 0.33, 0.34)</div>
+            </div>
+            <div class="triangle panelbox">
+              <svg id="triSVG"></svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- SIGNALS + ATLAS -->
+        <section class="panel" id="signals">
+          <div class="signals">
+            <div class="panelbox">
+              <div class="section-title">String-Theory Signal (barcode)</div>
+              <div class="barcode"><canvas id="barcode"></canvas></div>
+              <div style="display:flex;gap:.5rem;align-items:center;margin-top:.6rem">
+                <select id="sigSelect"></select>
+                <button id="mutate" class="tab">Mutate pattern</button>
+              </div>
+            </div>
+            <div class="panelbox">
+              <div class="section-title">Atlas (Simulonic Regions)</div>
+              <div class="atlas" id="atlas"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div>© Simulon • Prototype UI • HTML-only</div>
+    <div>ICV steers weights; filters shape the stage.</div>
+  </footer>
+</div>
+
+<script>
+/* ------------------------- Demo Data ------------------------- */
+const affairs = [
+  { title:"Energy Transition Compact", tag:["Markets","Planetary"], region:"Europe/Africa", cat:"Markets", coherence:72, risk:0.28, simulon:[0.6,0.2,0.3] },
+  { title:"Mars Treaty (Hab Law I)", tag:["Governance","Martian"], region:"Martian", cat:"Governance", coherence:64, risk:0.36, simulon:[0.5,0.5,0.2] },
+  { title:"AI Autonomy Accords", tag:["Technics","Governance"], region:"Americas", cat:"Technics", coherence:58, risk:0.42, simulon:[0.7,0.2,0.6] },
+  { title:"Ocean Rights Convention", tag:["Planetary","Culture"], region:"Asia/Oceania", cat:"Planetary", coherence:69, risk:0.26, simulon:[0.4,0.6,0.3] },
+  { title:"CBDC Interop Framework", tag:["Markets","Governance"], region:"Europe/Africa", cat:"Markets", coherence:61, risk:0.34, simulon:[0.5,0.3,0.5] },
+  { title:"Quantum Sensor Proliferation", tag:["Technics","Orbital"], region:"Orbital", cat:"Technics", coherence:54, risk:0.47, simulon:[0.8,0.4,0.5] },
+  { title:"Climate Adaptation Mesh", tag:["Planetary","Culture"], region:"Americas", cat:"Planetary", coherence:75, risk:0.24, simulon:[0.3,0.7,0.2] },
+  { title:"Orbital Debris Accords", tag:["Orbital","Governance"], region:"Orbital", cat:"Governance", coherence:67, risk:0.31, simulon:[0.6,0.6,0.4] },
+  { title:"Cultural Memory Commons", tag:["Culture","Governance"], region:"Asia/Oceania", cat:"Culture", coherence:73, risk:0.22, simulon:[0.2,0.5,0.3] },
+];
+
+const triadWords = ["Peace","War","Justice","Power","Culture","Technology","Market","State","Tribe","Cosmos","Memory","Liberty"];
+
+/* ------------------------- Utilities ------------------------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+function seedPRNG(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31 + s.charCodeAt(i))>>>0; return ()=> (h = (h*48271) % 0x7fffffff) / 0x7fffffff; }
+function lerp(a,b,t){ return a+(b-a)*t; }
+function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
+function fmt(n, d=2){ return Number(n).toFixed(d); }
+
+/* ------------------------- A–Z Index ------------------------- */
+const az = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const azBox = $("#az");
+let activeLetter = "";
+az.forEach(ch=>{
+  const b = document.createElement("div");
+  b.className = "letter"; b.textContent = ch;
+  b.onclick = ()=>{ activeLetter = (activeLetter===ch?"":ch); render(); updateAZ(); };
+  azBox.appendChild(b);
+});
+function updateAZ(){
+  $$(".az .letter").forEach(n=>{
+    n.classList.toggle("active", n.textContent===activeLetter && activeLetter);
+  });
+}
+
+/* ------------------------- Filters + Search ------------------------- */
+$("#reset").onclick = ()=>{ $("#q").value=""; $("#cat").value=""; $("#region").value=""; activeLetter=""; render(); updateAZ(); };
+["q","cat","region"].forEach(id => $( "#"+id ).oninput = render);
+
+/* ------------------------- ICV ------------------------- */
+["ix","iy","iz"].forEach(id => $("#"+id).oninput = ()=>{ updateICV(); render(false); });
+function getICV(){ return [Number($("#ix").value), Number($("#iy").value), Number($("#iz").value)]; }
+function updateICV(){
+  const v = getICV();
+  const mag = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) / 100;
+  $("#mag").textContent = `‖ι‖ = ${fmt(mag,2)}`;
+}
+
+/* ------------------------- Overview Cards ------------------------- */
+const grid = $("#grid");
+function sparkSeries(name, base){
+  const r = seedPRNG(name);
+  const N = 28, series=[];
+  let v = base/100;
+  for(let i=0;i<N;i++){ v = clamp(v + (r()-0.5)*0.06, .2, .95); series.push(v); }
+  return series;
+}
+function makeSparkSVG(series){
+  const w=600, h=90, pad=6;
+  const pts = series.map((v,i)=>[ pad + i*( (w-2*pad)/(series.length-1) ), h - pad - v*(h-2*pad) ]);
+  const d = "M"+pts.map(p=>p[0]+","+p[1]).join(" L ");
+  const polyY = pts.map(p=>p[1]).join(" ");
+  // Area fill
+  const area = "M"+pts[0][0]+","+(h-pad)+" L "+pts.map(p=>p[0]+","+p[1]).join(" L ")+" L "+pts.at(-1)[0]+","+(h-pad)+" Z";
+  return `
+    <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#61dafb" stop-opacity=".35"/>
+          <stop offset="100%" stop-color="#9f7aea" stop-opacity=".35"/>
+        </linearGradient>
+      </defs>
+      <path d="${area}" fill="url(#g)" opacity=".45"></path>
+      <path d="${d}" stroke="#8fb6ff" stroke-width="2" fill="none"></path>
+    </svg>`;
+}
+function renderCards(list){
+  grid.innerHTML = "";
+  list.forEach(a=>{
+    const c = document.createElement("div");
+    c.className = "card";
+    const simG = a.simulon;
+    const icv = getICV().map(x=>x/100);
+    const gain = clamp(simG[0]*icv[0] + simG[1]*icv[1] + simG[2]*icv[2], -1, 1);
+    const cohAdj = clamp(a.coherence/100 + 0.12*gain - 0.4*a.risk, 0, 1);
+    const pct = Math.round(cohAdj*100);
+    const series = sparkSeries(a.title, a.coherence);
+    c.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem">
+        <h3>${a.title}</h3>
+        <span class="tag">${a.cat}</span>
+      </div>
+      <div class="meta">
+        <div>Region: <span class="em">${a.region}</span></div>
+        <div>Infosophic coherence: <span class="em">${a.coherence}</span></div>
+        <div>Risk: <span class="em" style="color:${a.risk>0.4?'#f87171':'#6ee7a6'}">${fmt(a.risk,2)}</span></div>
+      </div>
+      <div class="spark">${makeSparkSVG(series)}</div>
+      <div class="meter">
+        <div style="width:90px;font-size:12px;color:var(--muted)">Simulonic gain</div>
+        <div class="bar"><i style="width:${Math.round((gain*0.5+0.5)*100)}%"></i></div>
+        <div class="tag">Cohere-Index ${pct}</div>
+      </div>
+    `;
+    c.onclick = ()=>{ // set focus in radar + signals
+      $("#focus").value = a.title; drawRadar(); $("#sigSelect").value = a.title; drawBarcode();
+      // jump tab
+      setTab("cohere");
+    };
+    grid.appendChild(c);
+  });
+}
+
+/* ------------------------- Filtered list ------------------------- */
+function filtered(){
+  const q = $("#q").value.trim().toLowerCase();
+  const cat = $("#cat").value; const region = $("#region").value;
+  return affairs.filter(a=>{
+    const matchQ = !q || (a.title.toLowerCase().includes(q) || a.tag.join(" ").toLowerCase().includes(q));
+    const matchCat = !cat || a.cat===cat;
+    const matchRegion = !region || a.region===region;
+    const matchAZ = !activeLetter || a.title[0].toUpperCase()===activeLetter;
+    return matchQ && matchCat && matchRegion && matchAZ;
+  });
+}
+function render(updateCards=true){
+  const list = filtered();
+  $("#count").textContent = `${list.length} affair${list.length===1?"":"s"}`;
+  if(updateCards) renderCards(list);
+}
+
+/* ------------------------- Tabs ------------------------- */
+$$("#tabs .tab").forEach(t=> t.onclick = ()=> setTab(t.dataset.tab) );
+function setTab(name){
+  $$("#tabs .tab").forEach(t=> t.classList.toggle("active", t.dataset.tab===name));
+  $$(".panel").forEach(p=> p.classList.toggle("active", p.id===name));
+}
+
+/* ------------------------- Radar ------------------------- */
+const radarAxes = ["Coherence","Stability","Openness","Resonance","Risk⁻","Agency"];
+function populateFocus(){
+  const s = $("#focus"); s.innerHTML="";
+  affairs.forEach(a=>{ const o=document.createElement("option"); o.textContent=a.title; s.appendChild(o); });
+  s.onchange = drawRadar;
+}
+function radarValues(a){
+  // derive six axes from base + simulonic + risk + ICV steering
+  const icv = getICV().map(x=>x/100);
+  const gain = a.simulon[0]*icv[0] + a.simulon[1]*icv[1] + a.simulon[2]*icv[2];
+  const C = clamp(a.coherence/100 + 0.10*gain, 0, 1);
+  const S = clamp(0.6 + 0.2*(1-a.risk) + 0.05*gain, 0, 1);
+  const O = clamp(0.45 + 0.15*a.simulon[1] + 0.1*icv[1], 0, 1);
+  const R = clamp(0.5 + 0.2*a.simulon[0] + 0.1*icv[0], 0, 1);
+  const K = clamp(1 - a.risk - 0.05*icv[2], 0, 1); // “Risk⁻”
+  const A = clamp(0.45 + 0.25*a.simulon[2] + 0.1*icv[2], 0, 1);
+  // apply panel weight sliders
+  const W = [$("#wC"),$("#wS"),$("#wO"),$("#wR"),$("#wK"),$("#wA")].map(e=>Number(e.value)/100);
+  const V = [C,S,O,R,K,A].map((v,i)=> clamp(lerp(v, v*(0.7+0.6*W[i])),0,1)); // slight emphasis
+  const score = Math.round(V.reduce((s,v)=>s+v,0)/V.length*100);
+  $("#score").textContent = `Global score: ${score}`;
+  return V;
+}
+function drawRadar(){
+  const focus = $("#focus").value || affairs[0].title;
+  const a = affairs.find(x=>x.title===focus) || affairs[0];
+  const v = radarValues(a);
+  const w=600,h=360,cx=w/2,cy=h/2,r=130, rings=4;
+  const svg = $("#radar"); svg.innerHTML="";
+  const NS="http://www.w3.org/2000/svg";
+  function mk(tag, attrs){ const el=document.createElementNS(NS, tag); for(const k in attrs) el.setAttribute(k, attrs[k]); return el; }
+  // Rings
+  for(let i=1;i<=rings;i++){
+    const rr = r*i/rings;
+    const g = mk("polygon",{points:polyPoints(Array(radarAxes.length).fill(rr), (i%2? "#121a31":"#0e162b")), fill:(i%2?".86":".6")});
+  }
+  // Grid lines + labels
+  for(let i=0;i<radarAxes.length;i++){
+    const a0 = -Math.PI/2 + i*2*Math.PI/radarAxes.length;
+    const x = cx + Math.cos(a0)*r, y = cy + Math.sin(a0)*r;
+    const ln = mk("line",{x1:cx,y1:cy,x2:x,y2:y,stroke:"#223259","stroke-width":"1"});
+    svg.appendChild(ln);
+    const lb = mk("text",{x: cx + Math.cos(a0)*(r+18), y: cy + Math.sin(a0)*(r+18), fill:"#b3c3e6","font-size":"12","text-anchor":"middle","dominant-baseline":"middle"});
+    lb.textContent = radarAxes[i]; svg.appendChild(lb);
+  }
+  // Rings (background polygons)
+  for(let i=1;i<=rings;i++){
+    const rr = r*i/rings;
+    const pg = mk("polygon",{points:polyPoints(Array(radarAxes.length).fill(rr)), fill:"#101a33", stroke:"#1a2748","stroke-width":"1", opacity: i===rings? .45:.18});
+    svg.appendChild(pg);
+  }
+  // Data polygon
+  const dataR = v.map(x=> x*r);
+  const shape = mk("polygon",{points:polyPoints(dataR), fill:"url(#radGrad)", stroke:"#88b5ff","stroke-width":"2", opacity:"0.95"});
+  // gradient def
+  const defs = mk("defs",{}); const lg = mk("linearGradient",{id:"radGrad",x1:"0",y1:"0",x2:"1",y2:"1"});
+  const s1=mk("stop",{offset:"0%","stop-color":"#61dafb","stop-opacity":".55"});
+  const s2=mk("stop",{offset:"100%","stop-color":"#9f7aea","stop-opacity":".55"});
+  lg.appendChild(s1); lg.appendChild(s2); defs.appendChild(lg); svg.appendChild(defs);
+  svg.appendChild(shape);
+  function polyPoints(rs, col){
+    return rs.map((ri,i)=>{
+      const a0 = -Math.PI/2 + i*2*Math.PI/rs.length;
+      const x = cx + Math.cos(a0)*ri; const y = cy + Math.sin(a0)*ri;
+      return `${x},${y}`;
+    }).join(" ");
+  }
+}
+["wC","wS","wO","wR","wK","wA"].forEach(id=> $("#"+id).oninput = drawRadar);
+
+/* ------------------------- Triads ------------------------- */
+function populateTriadChoices(){
+  const box = $("#choices"); box.innerHTML="";
+  triadWords.forEach(w=>{
+    const row=document.createElement("div"); row.className="opt";
+    const id = "tw_"+w.replace(/\s+/g,"_");
+    row.innerHTML = `<input type="checkbox" id="${id}"><label for="${id}">${w}</label>`;
+    box.appendChild(row);
+  });
+  box.onchange = drawTriad;
+}
+function triadSelected(){
+  const chosen = $$("#choices input:checked").slice(0,3).map(i=> i.nextElementSibling.textContent);
+  // ensure at least 3 placeholders
+  while(chosen.length<3) chosen.push("—");
+  return chosen.slice(0,3);
+}
+function drawTriad(){
+  const [A,B,C] = triadSelected();
+  // weights
+  let a = Number($("#alpha").value), b = Number($("#beta").value), c = Number($("#gamma").value);
+  const sum = Math.max(a+b+c, 1e-6); a/=sum; b/=sum; c/=sum;
+  $("#bary").textContent = `Barycentric (α,β,γ) = (${fmt(a,2)}, ${fmt(b,2)}, ${fmt(c,2)})`;
+  const svg = $("#triSVG"); svg.innerHTML="";
+  const NS="http://www.w3.org/2000/svg";
+  function mk(tag, attrs){ const el=document.createElementNS(NS, tag); for(const k in attrs) el.setAttribute(k, attrs[k]); return el; }
+  const w=700,h=400; svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  const pad=40;
+  const pA=[w/2, pad], pB=[pad, h-pad], pC=[w-pad, h-pad];
+  // triangle
+  const poly = mk("polygon",{points:`${pA[0]},${pA[1]} ${pB[0]},${pB[1]} ${pC[0]},${pC[1]}`, fill:"#101a33", stroke:"#1c2b4f","stroke-width":"2"});
+  svg.appendChild(poly);
+  // dashed connectors
+  [pA,pB,pC].forEach(p=>{
+    const ln=mk("line",{x1:w/2,y1:h/2,x2:p[0],y2:p[1],stroke:"#223259","stroke-width":"1","stroke-dasharray":"4,6"}); svg.appendChild(ln);
+  });
+  // labels
+  const labels=[A,B,C]; const pts=[pA,pB,pC];
+  labels.forEach((t,i)=>{
+    const tx=mk("text",{x:pts[i][0],y:pts[i][1]-10, fill:"#b3c3e6","font-size":"13","text-anchor":"middle"}); tx.textContent=t;
+    svg.appendChild(tx);
+  });
+  // centroid by barycentric weights
+  const P = [ a*pA[0]+b*pB[0]+c*pC[0], a*pA[1]+b*pB[1]+c*pC[1] ];
+  const halo = mk("circle",{cx:P[0], cy:P[1], r:"10", fill:"#9f7aea", opacity:".28"}); svg.appendChild(halo);
+  const dot = mk("circle",{cx:P[0], cy:P[1], r:"4", fill:"#61dafb"}); svg.appendChild(dot);
+}
+["alpha","beta","gamma"].forEach(id=> $("#"+id).oninput = drawTriad);
+
+/* ------------------------- Signals (barcode) ------------------------- */
+function populateSignals(){
+  const s=$("#sigSelect"); s.innerHTML="";
+  affairs.forEach(a=>{ const o=document.createElement("option"); o.textContent=a.title; s.appendChild(o); });
+  s.onchange = drawBarcode;
+}
+function drawBarcode(){
+  const name = $("#sigSelect").value || affairs[0].title;
+  const cv = document.getElementById("barcode");
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  const W = cv.clientWidth||800, H = cv.clientHeight||380; cv.width=W*dpr; cv.height=H*dpr;
+  const g = cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0);
+  // background
+  g.fillStyle = "#0a1020"; g.fillRect(0,0,W,H);
+  // seed pattern
+  const r = seedPRNG(name + JSON.stringify(getICV()));
+  const cols = Math.floor(W/5);
+  for(let i=0;i<cols;i++){
+    const x=i*5; const h = (0.2 + 0.75*r())*H;
+    const opa = 0.35 + 0.55*r();
+    g.fillStyle=`rgba(${120+120*r()|0}, ${170+30*r()|0}, ${255|0}, ${opa.toFixed(2)})`;
+    g.fillRect(x, H-h, 3, h);
+  }
+  // overlay lines
+  g.strokeStyle="#1a2748"; g.lineWidth=1;
+  for(let y=0;y<H;y+=24){ g.beginPath(); g.moveTo(0,y+.5); g.lineTo(W,y+.5); g.stroke(); }
+}
+$("#mutate").onclick = ()=>{ // nudge ICV slightly to mutate
+  const [x,y,z]=getICV(); $("#ix").value = x+((Math.random()-.5)*10|0); $("#iy").value = y+((Math.random()-.5)*10|0); $("#iz").value = z+((Math.random()-.5)*10|0);
+  updateICV(); drawBarcode(); drawRadar(); render(false);
+};
+
+/* ------------------------- Atlas ------------------------- */
+const regions = ["Americas","Europe/Africa","Asia/Oceania","Orbital","Lunar","Martian"];
+function renderAtlas(){
+  const box = $("#atlas"); box.innerHTML="";
+  regions.forEach(R=>{
+    const list = affairs.filter(a=> a.region===R);
+    const avgC = list.length? Math.round(list.reduce((s,a)=>s+a.coherence,0)/list.length) : "—";
+    const avgRisk = list.length? (list.reduce((s,a)=>s+a.risk,0)/list.length) : 0.0;
+    const t = document.createElement("div"); t.className="tile";
+    t.innerHTML = `<div class="tag">${R}</div><h4>Cohere-Index (avg)</h4>
+                   <div class="meter" style="margin:.4rem 0 .6rem 0">
+                     <div class="bar"><i style="width:${avgC==='—'?0:avgC}%"></i></div>
+                     <div class="tag">${avgC==='—'?'—':avgC}</div>
+                   </div>
+                   <div style="color:${avgRisk>0.4?'#f87171':'#6ee7a6'}">Risk: ${avgC==='—'?'—':fmt(avgRisk,2)}</div>`;
+    box.appendChild(t);
+  });
+}
+
+/* ------------------------- Wiring ------------------------- */
+function boot(){
+  updateICV();
+  populateFocus(); populateSignals(); populateTriadChoices();
+  // preselect some triads
+  $$("#choices input").forEach((el,i)=>{ if([0,3,5].includes(i)) el.checked = true; });
+  render(true); drawRadar(); drawTriad(); drawBarcode(); renderAtlas();
+  // ensure AZ renders
+  updateAZ();
+}
+window.addEventListener("resize", ()=>{ drawBarcode(); });
+boot();
+</script>
+</body>
+</html>
